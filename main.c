@@ -10,6 +10,7 @@ SDL_Texture* color_buffer_texture = NULL;
 uint32_t* color_buffer = NULL;
 int window_width = 800;
 int window_height = 600;
+
 bool initialize_window(void){
 
     if (SDL_Init(SDL_INIT_EVERYTHING) !=0 ) {
@@ -28,8 +29,8 @@ bool initialize_window(void){
         NULL,
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
-        800,
-        600,
+        window_width,
+        window_height,
         SDL_WINDOW_BORDERLESS
     );
     if(!window){
@@ -83,6 +84,28 @@ void update(void){
     
 }
 
+void draw_grid(void) {
+    for (int y = 0; y < window_height; y++) {
+        for(int x = 0; x < window_width; x++) {
+            if(x % 10 == 0 || y % 10 == 0) {
+                color_buffer[(window_width * y) + x] = 0xFF333333;
+            }
+        }
+    }
+}
+
+void draw_rect(int x, int y, int rect_width, int rect_height, uint32_t color){
+    //These values are the starting coordinates, viz. the top left corner of the rectangle
+    for(int i = y; i < y + rect_height; i++){
+        for(int j = x; j < x + rect_width; j++){
+            color_buffer[(window_width * i) + j] = color;
+        }
+    }
+    
+    
+    }
+
+
 void render_color_buffer(void) {
     SDL_UpdateTexture(
         color_buffer_texture,
@@ -102,12 +125,15 @@ void clear_color_buffer(uint32_t color) {
 }
 
 void render(void){
-    SDL_SetRenderDrawColor(renderer,0, 0, 0, 255);
+    SDL_SetRenderDrawColor(renderer,255,255,255,255);
     SDL_RenderClear(renderer);
+
+    draw_grid();
+    draw_rect(32, 100, 500, 300, 0xFFEA67D6);
 
     render_color_buffer();
 
-    clear_color_buffer(0xFFFFFF00);
+    clear_color_buffer(0xFF000000);
 
     SDL_RenderPresent(renderer);
 }
