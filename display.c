@@ -54,11 +54,19 @@ void draw_grid(void) {
     }
 }
 
+void draw_pixel(int x, int y, uint32_t color) {
+    if( x  >= 0 && x < window_width && y >= 0 && y < window_height) {
+        color_buffer[( window_width * y ) + x] = color;
+    }
+}
+
 void draw_rect(int x, int y, int rect_width, int rect_height, uint32_t color){
     //These values are the starting coordinates, viz. the top left corner of the rectangle
     for(int i = y; i < y + rect_height; i++){
         for(int j = x; j < x + rect_width; j++){
-            color_buffer[(window_width * i) + j] = color;
+            int current_x = x + i;
+            int current_y = y + j;
+            draw_pixel( current_x, current_y, color);
         }
     }
     
