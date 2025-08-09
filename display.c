@@ -6,6 +6,7 @@ uint32_t* color_buffer = NULL;
 SDL_Texture* color_buffer_texture = NULL;
 int window_width = 800;
 int window_height = 600;
+
 bool initialize_window(void){
 
     if (SDL_Init(SDL_INIT_EVERYTHING) !=0 ) {
@@ -37,41 +38,35 @@ bool initialize_window(void){
     renderer = SDL_CreateRenderer(window, -1, 0);
     if(!renderer){
         fprintf(stderr, "Error creating SDL renderer\n");
+        return false;
     }
-
-    SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 
     return true;
 }
 
 void draw_grid(void) {
-    for (int y = 0; y < window_height; y++) {
-        for(int x = 0; x < window_width; x++) {
-            if(x % 10 == 0 || y % 10 == 0) {
+    for (int y = 0; y < window_height; y+=10) {
+        for(int x = 0; x < window_width; x+=10) {
                 color_buffer[(window_width * y) + x] = 0xFF333333;
             }
         }
     }
-}
 
 void draw_pixel(int x, int y, uint32_t color) {
-    if( x  >= 0 && x < window_width && y >= 0 && y < window_height) {
-        color_buffer[( window_width * y ) + x] = color;
+    if ( x >= 0 && x < window_width && y >=0 && y < window_height ) {
+        color_buffer[(window_width * y) + x] = color;
     }
 }
 
 void draw_rect(int x, int y, int rect_width, int rect_height, uint32_t color){
-    //These values are the starting coordinates, viz. the top left corner of the rectangle
-    for(int i = y; i < y + rect_height; i++){
-        for(int j = x; j < x + rect_width; j++){
+    for(int i = 0; i < rect_width; i++){
+        for(int j = 0; j < rect_height; j++) {
             int current_x = x + i;
             int current_y = y + j;
             draw_pixel( current_x, current_y, color);
         }
     }
-    
-    
-    }
+ }
 
 
 void render_color_buffer(void) {
